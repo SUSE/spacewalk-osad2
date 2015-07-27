@@ -8,10 +8,7 @@ class ServerConfig(object):
     self.config.readfp(open(config_path))
 
   def get_logger(self, name):
-    if self.config.getboolean('main', 'debug'):
-      log_level = logging.DEBUG
-    else:
-      log_level = logging.INFO
+    log_level = logging.DEBUG if self.config.getboolean('main', 'debug') else logging.INFO
     logging.basicConfig(level=log_level, filename=self.config.get('main', 'log_file'))
     return logging.getLogger(name)
 

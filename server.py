@@ -64,6 +64,6 @@ if __name__ == '__main__':
     pub.bind('tcp://%s:%d' % (config.get_bind(), config.get_publisher_port()))
     outstream = zmqstream.ZMQStream(pub, loop)
 
-    hb = Server(loop, outstream, instream, config)
+    Server(loop, outstream, instream, config)
 
     loop.start()
