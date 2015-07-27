@@ -52,10 +52,9 @@ TEST_CONFIG_PATH = 'etc/osad_server.test.cfg'
 if __name__ == '__main__':
     loop = ioloop.IOLoop()
     context = zmq.Context()
-
-    secret_file, public_file = setup_auth_keys()
-
     config = ServerConfig(TEST_CONFIG_PATH)
+
+    secret_file, public_file = setup_auth_keys(config)
 
     router = setup_stream(context, zmq.ROUTER, secret_file, public_file)
     router.bind('tcp://%s:%d' % (config.get_bind(), config.get_listener_port()))

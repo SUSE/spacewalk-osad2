@@ -4,7 +4,7 @@ import logging
 
 class ServerConfig(object):
   def __init__(self, config_path):
-    self.config = ConfigParser.ConfigParser(config_path)
+    self.config = ConfigParser.ConfigParser()
     self.config.readfp(open(config_path))
 
   def get_logger(self, name):
@@ -15,7 +15,7 @@ class ServerConfig(object):
     logging.basicConfig(level=log_level, filename=self.config.get('main', 'log_file'))
     return logging.getLogger(name)
 
-  def get_checking_count(self):
+  def get_checkin_count(self):
     return self.config.getint('main', 'checkin_count')
 
   def get_ping_interval(self):
