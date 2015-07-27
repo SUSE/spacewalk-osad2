@@ -83,6 +83,9 @@ class ClientConfig(object):
     def get_client_secret_key_file(self):
         return os.path.join(self.get_default_keys_dir(), self.config.get('osad', 'client_secret_key'))
 
+    def get_pid_file(self):
+        return self.config.get('osad', 'pidfile')
+
     def get_systemid(self):
         systemid_path = self.config.get('osad', 'systemid')
         with open(systemid_path) as f:

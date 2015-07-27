@@ -9,6 +9,10 @@
 # along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 #
+import signal
+import daemon
+import lockfile
+import argparse
 
 from src.client.config import ClientConfig
 from src.client.client import Client
@@ -17,6 +21,41 @@ DEFAULT_CONFIG_FILE = '/etc/sysconfig/rhn/osad.conf'
 TEST_CONFIG_FILE = 'etc/osad_client.test.cfg'
 
 if __name__ == '__main__':
-    config = ClientConfig(TEST_CONFIG_FILE)
-    client = Client(config)
-    client.start()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--config',
+                        default=TEST_CONFIG_FILE,
+                        dest='config_file',
+                        help='alternative configuration file')
+    parser.add_argument('--daemon',
+                        dest='daemon',
+                        action='store_true',
+                        help='run as daemon')
+    parser.add_argument('--no-daemon',
+                        dest='daemon',
+                        action='store_false',
+                        help='run as shell process')
+    parser.set_defaults(daemon=False)
+
+    args = parser.parse_args()
+
+    config = ClientConfig(args.config_file)
+
+    if args.daemon:
+        context = daemon.DaemonContext(
+            working_directory='/home/test',
+            umask=0o002,
+            pidfile=lockfile.FileLock(config.get_pid_file()),
+        )
+        context.signal_map = {
+            # signal.SIGTERM: program_cleanup,
+            signal.SIGHUP: 'terminate',
+            # signal.SIGUSR1: reload_program_config,
+        }
+        with context:
+            client = Client(config)
+            client.start()
+    else:
+        client = Client(config)
+        client.start()
+
+
