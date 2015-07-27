@@ -62,7 +62,7 @@ class Client(object):
             if self.config.is_debug():
                 cmd.append('-vvv')
             # do not wait
-            self.do_checkin_process.process = subprocess.Popen(cmd)
+            self.do_checkin_process = subprocess.Popen(cmd)
         except OSError as e:
             self.logger.error("Can't execute rhn_check: %s" % e.strerror)
         except Exception as e:

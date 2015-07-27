@@ -8,7 +8,6 @@ from src.client.client import Client
 DEFAULT_CONFIG_FILE = '/etc/sysconfig/rhn/osad.conf'
 TEST_CONFIG_FILE = 'etc/osad_client.test.cfg'
 
-
 def setup_stream(context, socket_type, client_secret_file, server_public_file):
     stream = context.socket(socket_type)
     client_public, client_secret = zmq.auth.load_certificate(client_secret_file)
@@ -23,6 +22,7 @@ def setup_stream(context, socket_type, client_secret_file, server_public_file):
 if __name__ == '__main__':
 
     config = ClientConfig(TEST_CONFIG_FILE)
+
     logger = config.get_logger(__name__)
 
     if not os.path.exists(config.get_server_public_key_file()):

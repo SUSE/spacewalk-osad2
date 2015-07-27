@@ -5,6 +5,11 @@ import ConfigParser
 import logging
 import time
 
+
+import ConfigParser
+import logging
+import time
+
 from rhn import rpclib
 from up2date_client.config import initUp2dateConfig
 from up2date_client import config
