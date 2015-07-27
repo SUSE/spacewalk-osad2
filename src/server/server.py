@@ -1,4 +1,3 @@
-!/usr/bin/env python
 #
 # Copyright (c) 2014-2015 SUSE LLC
 #
@@ -16,14 +15,12 @@ certificate must be generated first, using generate_certificates.py
 
 """
 
-import os.path
 import time
 
-import zmq
-from zmq.auth.ioloop import IOLoopAuthenticator
-from zmq.eventloop import ioloop, zmqstream
+from zmq.eventloop import ioloop
 
-from osad import smdb
+from src.server import smdb
+
 
 class Server(object):
     """OSAD server class, uses two ZMQ streams to send and receive commands

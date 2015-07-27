@@ -25,8 +25,7 @@ import zmq
 from zmq.auth.ioloop import IOLoopAuthenticator
 from zmq.eventloop import ioloop, zmqstream
 
-from osad import smdb
-
+from src.server import smdb
 
 CFG = ConfigParser.ConfigParser()
 CFG.readfp(open('/etc/rhn/osad/osad_server.cfg'))

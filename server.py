@@ -1,21 +1,26 @@
+import os
 import zmq
 from zmq.auth.ioloop import IOLoopAuthenticator
 from zmq.eventloop import ioloop, zmqstream
 
-from osad import smdb
+from src.server.config import ServerConfig
+from src.server.server import Server
 
 
-def setup_auth_keys():
-    certs_dir = CFG.get('main', 'certificates')
-    public_keys_dir = os.path.join(certs_dir, 'public_keys')
-    private_keys_dir = os.path.join(certs_dir, 'private_keys')
+
+def setup_auth_keys(config):
+    """
+    :param config: ServerConfig
+    """
+    public_keys_dir = os.path.join(config.get_certificates(), 'public_keys')
+    private_keys_dir = os.path.join(config.get_certificates(), 'private_keys')
 
     if not (os.path.exists(public_keys_dir) and
             os.path.exists(private_keys_dir)):
         msg = ("Certificates are missing: %s and %s - "
                "run generate_certificates script first" %
                (public_keys_dir, private_keys_dir))
-        LOG.critical(msg)
+        config.get_logger(__name__).critical(msg)
         raise Exception(msg)
 
     auth = IOLoopAuthenticator()
@@ -40,7 +45,9 @@ def setup_stream(context, socket_type, secret_file, public_file):
 
     return stream
 
-DEFAULT_CONFIG_PATH = '/etc/rhn/osad/osad_server.cfg'
+PROD_CONFIG_PATH = '/etc/rhn/osad/osad_server.cfg'
+TEST_CONFIG_PATH = 'etc/osad_server.test.cfg'
+
 
 if __name__ == '__main__':
     loop = ioloop.IOLoop()
@@ -48,17 +55,15 @@ if __name__ == '__main__':
 
     secret_file, public_file = setup_auth_keys()
 
+    config = ServerConfig(TEST_CONFIG_PATH)
+
     router = setup_stream(context, zmq.ROUTER, secret_file, public_file)
-    router.bind('tcp://%s:%d' % (CFG.get('main', 'bind'),
-                                 CFG.getint('main', 'listener_port')))
+    router.bind('tcp://%s:%d' % (config.get_bind(), config.get_listener_port()))
     instream = zmqstream.ZMQStream(router, loop)
 
     pub = setup_stream(context, zmq.PUB, secret_file, public_file)
-    pub.bind('tcp://%s:%d' % (CFG.get('main', 'bind'),
-                              CFG.getint('main', 'publisher_port')))
+    pub.bind('tcp://%s:%d' % (config.get_bind(), config.get_publisher_port()))
     outstream = zmqstream.ZMQStream(pub, loop)
-
-    config = ServerConfig(DEFAULT_CONFIG_PATH)
 
     hb = Server(loop, outstream, instream, config)
 
