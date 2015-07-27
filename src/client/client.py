@@ -13,8 +13,8 @@
 import time
 import subprocess
 
-class Client(object):
 
+class Client(object):
     def __init__(self, config, listener, ponger):
         self.config = config
         self.listener = listener
@@ -35,7 +35,7 @@ class Client(object):
 
     def handle_message(self, msg):
 
-        AVAILABLE_CMDS = {'checkin': self.do_checkin}
+        available_cmds = {'checkin': self.do_checkin}
 
         self.logger.debug("Got '%s' from %s" % (msg, self.config.get_server_host()))
         topic, cmd = msg.split(None, 1)
@@ -43,7 +43,7 @@ class Client(object):
             self.do_ping(msg)
         elif topic == (self.config.get_system_topic() % self.config.get_system_name()):
             try:
-                AVAILABLE_CMDS[cmd](self)
+                available_cmds[cmd](self)
             except KeyError:
                 self.logger.error("Unknown command '%s' from %s" % (cmd, self.config.get_server_host()))
 

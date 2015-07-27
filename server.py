@@ -1,3 +1,15 @@
+#!/usr/bin/env python
+#
+# Copyright (c) 2014-2015 SUSE LLC
+#
+# This software is licensed to you under the GNU General Public License,
+# version 2 (GPLv2). There is NO WARRANTY for this software, express or
+# implied, including the implied warranties of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. You should have received a copy of GPLv2
+# along with this software; if not, see
+# http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
+#
+
 import os
 import zmq
 from zmq.auth.ioloop import IOLoopAuthenticator
@@ -5,7 +17,6 @@ from zmq.eventloop import ioloop, zmqstream
 
 from src.server.config import ServerConfig
 from src.server.server import Server
-
 
 
 def setup_auth_keys(config):
@@ -16,7 +27,7 @@ def setup_auth_keys(config):
     private_keys_dir = os.path.join(config.get_certificates(), 'private_keys')
 
     if not (os.path.exists(public_keys_dir) and
-            os.path.exists(private_keys_dir)):
+                os.path.exists(private_keys_dir)):
         msg = ("Certificates are missing: %s and %s - "
                "run generate_certificates script first" %
                (public_keys_dir, private_keys_dir))
@@ -45,9 +56,9 @@ def setup_stream(context, socket_type, secret_file, public_file):
 
     return stream
 
+
 PROD_CONFIG_PATH = '/etc/rhn/osad/osad_server.cfg'
 TEST_CONFIG_PATH = 'etc/osad_server.test.cfg'
-
 
 if __name__ == '__main__':
     loop = ioloop.IOLoop()
