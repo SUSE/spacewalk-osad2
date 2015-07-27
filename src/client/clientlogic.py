@@ -14,7 +14,7 @@ import time
 import subprocess
 
 
-class Client(object):
+class ClientLogic(object):
     def __init__(self, config, listener, ponger):
         self.config = config
         self.listener = listener

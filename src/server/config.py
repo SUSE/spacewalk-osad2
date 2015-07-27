@@ -12,6 +12,7 @@
 
 import ConfigParser
 import logging
+import os
 
 
 class ServerConfig(object):
@@ -45,5 +46,8 @@ class ServerConfig(object):
     def get_publisher_port(self):
         return self.config.getint('main', 'publisher_port')
 
-    def get_certificates(self):
-        return self.config.get('main', 'certificates')
+    def get_public_keys_dir(self):
+        return os.path.join(self.config.get('main', 'certificates'), 'public_keys')
+
+    def get_private_keys_dir(self):
+        return os.path.join(self.config.get('main', 'certificates'), 'private_keys')

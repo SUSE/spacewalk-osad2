@@ -15,7 +15,7 @@ import zmq
 from zmq.auth.ioloop import IOLoopAuthenticator
 
 from src.client.config import ClientConfig
-from src.client.client import Client
+from src.client.clientlogic import ClientLogic
 
 DEFAULT_CONFIG_FILE = '/etc/sysconfig/rhn/osad.conf'
 TEST_CONFIG_FILE = 'etc/osad_client.test.cfg'
@@ -64,6 +64,6 @@ if __name__ == '__main__':
     ponger.connect(config.get_server_consumer())
     logger.info("Heartbeat stream connected to %s" % config.get_server_host())
 
-    client = Client(config, listener, ponger)
+    client = ClientLogic(config, listener, ponger)
 
     client.start()
