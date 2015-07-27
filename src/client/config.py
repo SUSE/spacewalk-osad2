@@ -17,6 +17,7 @@ sys.path.append('/usr/share/rhn')
 import ConfigParser
 import logging
 import time
+import os
 
 from rhn import rpclib
 from up2date_client.config import initUp2dateConfig
@@ -77,10 +78,10 @@ class ClientConfig(object):
         return self.config.get('osad', 'certificates')
 
     def get_server_public_key_file(self):
-        return self.config.get('osad', 'server_public_key')
+        return os.path.join(self.get_default_keys_dir(), self.config.get('osad', 'server_public_key'))
 
     def get_client_secret_key_file(self):
-        return self.config.get('osad', 'client_secret_key')
+        return os.path.join(self.get_default_keys_dir(), self.config.get('osad', 'client_secret_key'))
 
     def get_systemid(self):
         systemid_path = self.config.get('osad', 'systemid')
