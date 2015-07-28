@@ -36,8 +36,6 @@ class Client(Service):
         ponger.connect(self.config.get_server_consumer())
         self.logger.info("Heartbeat stream connected to %s" % self.config.get_server_host())
 
-        self.add_on_close(lambda: ctx.close())
-
         client = ClientHandler(self.config, listener, ponger)
         client.start()
 
@@ -62,6 +60,6 @@ class Client(Service):
         server_public, _ = zmq.auth.load_certificate(server_public_file)
         stream.curve_serverkey = server_public
 
-        self.add_on_close(lambda: context.zmq_close(stream))
+        self.add_on_close(lambda: stream.close())
 
         return stream

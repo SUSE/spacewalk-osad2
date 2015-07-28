@@ -63,6 +63,6 @@ class Server(Service):
         stream.curve_publickey = server_public
         stream.curve_server = True
 
-        self.add_on_close(lambda: context.zmq_close(stream))
+        self.add_on_close(lambda: stream.close())
 
         return stream
