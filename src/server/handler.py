@@ -17,15 +17,8 @@ from src.server import smdb
 
 
 class ServerHandler(object):
-  """OSAD server class, uses two ZMQ streams to send and receive commands
 
-  loop: Tornado IOLoop
-  pingstream: a PUB stream
-  pongstream: a ROUTER stream
-
-  """
-  _TOPICS = {'system': 'system:%s',
-             'ping': 'ping'}
+  _TOPICS = {'system': 'system:%s', 'ping': 'ping'}
 
   def __init__(self, loop, pingstream, pongstream, config):
     self.pingstream = pingstream

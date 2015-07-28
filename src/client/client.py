@@ -25,7 +25,6 @@ class Client(Service):
 
         self.logger.info("Connecting to %s" % self.config.get_server_host())
 
-        listener = ctx.socket(zmq.SUB)
         listener = self.__setup_stream(ctx, zmq.SUB, self.config.get_client_secret_key_file(), self.config.get_server_public_key_file())
         listener.setsockopt(zmq.SUBSCRIBE, self.config.get_system_topic() % self.config.get_system_name())
         listener.setsockopt(zmq.SUBSCRIBE, self.config.get_ping_topic())

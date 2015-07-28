@@ -16,12 +16,11 @@ from src.client.client import Client
 from src.daemonize import daemonize
 
 DEFAULT_CONFIG_FILE = '/etc/sysconfig/rhn/osad.conf'
-TEST_CONFIG_FILE = 'etc/osad_client.dev.cfg'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config',
-                        default=TEST_CONFIG_FILE,
+                        default=DEFAULT_CONFIG_FILE,
                         dest='config_file',
                         help='alternative configuration file')
     parser.add_argument('-d', '--daemon',

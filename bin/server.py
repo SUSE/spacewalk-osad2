@@ -15,15 +15,14 @@ from src.server.config import ServerConfig
 from src.server.server import Server
 from src.daemonize import daemonize
 
-PROD_CONFIG_PATH = '/etc/rhn/osad/osad_server.cfg'
-TEST_CONFIG_PATH = 'etc/osad_server.dev.cfg'
+DEFAULT_CONFIG_PATH = '/etc/rhn/osad/osad_server.cfg'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config',
-                        default=TEST_CONFIG_PATH,
+                        default=DEFAULT_CONFIG_PATH,
                         dest='config_file',
-                        help='alternative configuration file')
+                        help='configuration file')
     parser.add_argument('-d', '--daemon',
                         dest='daemon',
                         action='store_true',
