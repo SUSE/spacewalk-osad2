@@ -24,13 +24,13 @@ class Server(object):
     def start(self):
         loop = ioloop.IOLoop()
         context = zmq.Context()
-        secret_file, public_file = self.__authenticate(self.config)
+        secret_file = self.__authenticate()
 
-        router = self.__setup_stream(context, zmq.ROUTER, secret_file, public_file)
+        router = self.__setup_stream(context, zmq.ROUTER, secret_file)
         router.bind('tcp://%s:%d' % (self.config.get_bind(), self.config.get_listener_port()))
         instream = zmqstream.ZMQStream(router, loop)
 
-        pub = self.__setup_stream(context, zmq.PUB, secret_file, public_file)
+        pub = self.__setup_stream(context, zmq.PUB, secret_file)
         pub.bind('tcp://%s:%d' % (self.config.get_bind(), self.config.get_publisher_port()))
         outstream = zmqstream.ZMQStream(pub, loop)
 
@@ -52,10 +52,7 @@ class Server(object):
         auth = IOLoopAuthenticator()
         auth.configure_curve(domain='*', location=public_keys_dir)
 
-        secret_file = os.path.join(private_keys_dir, "server.key_secret")
-        public_file = os.path.join(public_keys_dir, "server.key")
-
-        return secret_file, public_file
+        return os.path.join(private_keys_dir, "server.key_secret")
 
     def __setup_stream(self, context, socket_type, secret_file):
         stream = context.socket(socket_type)

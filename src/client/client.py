@@ -41,6 +41,9 @@ class Client(object):
         client = ClientLogic(self.config, listener, ponger)
         client.start()
 
+    def stop(self):
+        self.logger.info("Terminating stream connected to %s" % self.config.get_server_host())      
+
     def __authenticate(self):
         if not os.path.exists(self.config.get_server_public_key_file()):
             self.logger.fatal('server public key missing: %s' % self.config.get_server_public_key_file())

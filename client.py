@@ -46,10 +46,14 @@ if __name__ == '__main__':
             umask=0o002,
             pidfile=lockfile.FileLock(config.get_pid_file()),
         )
+
+        def terminate(signum, frame):
+            print "terminating"
+
         context.signal_map = {
-            # signal.SIGTERM: program_cleanup,
-            signal.SIGHUP: 'terminate',
-            # signal.SIGUSR1: reload_program_config,
+            signal.SIGTERM: lambda : 1,
+            signal.SIGHUP: terminate,
+            signal.SIGUSR1: lambda : 1,
         }
         with context:
             client = Client(config)
