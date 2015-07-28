@@ -9,15 +9,39 @@
 # along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 #
+import os, sys
+import signal
+import daemon
+import lockfile
+import argparse
 
 from src.server.config import ServerConfig
 from src.server.server import Server
-
+from src.utils.daemonize import daemonize
 
 PROD_CONFIG_PATH = '/etc/rhn/osad/osad_server.cfg'
 TEST_CONFIG_PATH = 'etc/osad_server.test.cfg'
 
 if __name__ == '__main__':
-    config = ServerConfig(TEST_CONFIG_PATH)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--config',
+                        default=TEST_CONFIG_PATH,
+                        dest='config_file',
+                        help='alternative configuration file')
+    parser.add_argument('-d', '--daemon',
+                        dest='daemon',
+                        action='store_true',
+                        help='run as daemon',
+                        default=False)
+    args = parser.parse_args()
+
+    config = ServerConfig(args.config_file)
     server = Server(config)
-    server.start()
+
+    if args.daemon:
+        daemonize(server)
+    else:
+        try:
+            server.start()
+        finally:
+            server.stop()

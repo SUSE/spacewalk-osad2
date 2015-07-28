@@ -19,6 +19,7 @@ class Client(object):
     def __init__(self, config):
         self.config = config
         self.logger = config.get_logger(__name__)
+        self.on_close = []
 
     def start(self):
         ctx = zmq.Context()
@@ -31,18 +32,22 @@ class Client(object):
         listener.setsockopt(zmq.SUBSCRIBE, self.config.get_system_topic() % self.config.get_system_name())
         listener.setsockopt(zmq.SUBSCRIBE, self.config.get_ping_topic())
         listener.connect(self.config.get_server_producer())
+        self.on_close.append(lambda: ctx.zmq_close(listener))
         self.logger.info("Event stream connected to %s" % self.config.get_server_host())
 
         ponger = self.__setup_stream(ctx, zmq.DEALER, self.config.get_client_secret_key_file(), self.config.get_server_public_key_file())
         ponger.setsockopt(zmq.IDENTITY, self.config.get_system_name())
         ponger.connect(self.config.get_server_consumer())
+        self.on_close.append(lambda: ctx.zmq_close(ponger))
         self.logger.info("Heartbeat stream connected to %s" % self.config.get_server_host())
 
         client = ClientLogic(self.config, listener, ponger)
         client.start()
 
     def stop(self):
-        self.logger.info("Terminating stream connected to %s" % self.config.get_server_host())      
+        self.logger.info("Terminating stream connected to %s" % self.config.get_server_host())
+        for callback in self.on_close:
+            callback()
 
     def __authenticate(self):
         if not os.path.exists(self.config.get_server_public_key_file()):

@@ -20,6 +20,7 @@ from src.server.logic import ServerLogic
 class Server(object):
     def __init__(self, config):
         self.config = config
+        self.on_close = []
 
     def start(self):
         loop = ioloop.IOLoop()
@@ -37,6 +38,10 @@ class Server(object):
         ServerLogic(loop, outstream, instream, self.config)
 
         loop.start()
+
+    def stop(self):
+        for callback in self.on_close:
+            callback()
 
     def __authenticate(self):
         public_keys_dir = self.config.get_public_keys_dir()

@@ -51,3 +51,6 @@ class ServerConfig(object):
 
     def get_private_keys_dir(self):
         return os.path.join(self.config.get('main', 'certificates'), 'private_keys')
+
+    def get_pid_file(self):
+        return self.config.get('main', 'pidfile')

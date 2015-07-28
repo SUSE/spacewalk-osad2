@@ -28,18 +28,13 @@ if __name__ == '__main__':
                         default=TEST_CONFIG_FILE,
                         dest='config_file',
                         help='alternative configuration file')
-    parser.add_argument('--daemon',
+    parser.add_argument('-d', '--daemon',
                         dest='daemon',
                         action='store_true',
-                        help='run as daemon')
-    parser.add_argument('--no-daemon',
-                        dest='daemon',
-                        action='store_false',
-                        help='run as shell process')
-    parser.set_defaults(daemon=False)
-
+                        help='run as daemon',
+                        default=False)
     args = parser.parse_args()
-
+    
     config = ClientConfig(args.config_file)
     client = Client(config)
 
