@@ -16,8 +16,8 @@ from zmq.auth.ioloop import IOLoopAuthenticator
 from src.client.handler import ClientHandler
 from src.service import Service
 
-class Client(Service):
 
+class Client(Service):
     def start(self):
         ctx = zmq.Context()
 

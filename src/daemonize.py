@@ -3,8 +3,8 @@ import daemon
 import sys
 import signal
 
-def daemonize(service):
 
+def daemonize(service):
     pidfile = lockfile.FileLock(service.config.get_pid_file())
 
     if pidfile.is_locked():
@@ -17,7 +17,7 @@ def daemonize(service):
         working_directory='/',
         umask=0o002,
         pidfile=pidfile,
-        signal_map = {
+        signal_map={
             signal.SIGTERM: terminate,
             signal.SIGHUP: terminate
         }

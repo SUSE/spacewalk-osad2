@@ -29,7 +29,7 @@ if __name__ == '__main__':
                         help='run as daemon',
                         default=False)
     args = parser.parse_args()
-    
+
     config = ClientConfig(args.config_file)
     client = Client(config)
 
@@ -40,5 +40,3 @@ if __name__ == '__main__':
             client.start()
         finally:
             client.stop()
-
-
