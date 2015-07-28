@@ -13,41 +13,34 @@
 import os.path
 import zmq
 from zmq.auth.ioloop import IOLoopAuthenticator
-from src.client.logic import ClientLogic
+from src.client.handler import ClientHandler
+from src.service import Service
 
-class Client(object):
-    def __init__(self, config):
-        self.config = config
-        self.logger = config.get_logger(__name__)
-        self.on_close = []
+class Client(Service):
 
     def start(self):
         ctx = zmq.Context()
-        listener = ctx.socket(zmq.SUB)
 
         self.__authenticate()
 
         self.logger.info("Connecting to %s" % self.config.get_server_host())
+
+        listener = ctx.socket(zmq.SUB)
         listener = self.__setup_stream(ctx, zmq.SUB, self.config.get_client_secret_key_file(), self.config.get_server_public_key_file())
         listener.setsockopt(zmq.SUBSCRIBE, self.config.get_system_topic() % self.config.get_system_name())
         listener.setsockopt(zmq.SUBSCRIBE, self.config.get_ping_topic())
         listener.connect(self.config.get_server_producer())
-        self.on_close.append(lambda: ctx.zmq_close(listener))
         self.logger.info("Event stream connected to %s" % self.config.get_server_host())
 
         ponger = self.__setup_stream(ctx, zmq.DEALER, self.config.get_client_secret_key_file(), self.config.get_server_public_key_file())
         ponger.setsockopt(zmq.IDENTITY, self.config.get_system_name())
         ponger.connect(self.config.get_server_consumer())
-        self.on_close.append(lambda: ctx.zmq_close(ponger))
         self.logger.info("Heartbeat stream connected to %s" % self.config.get_server_host())
 
-        client = ClientLogic(self.config, listener, ponger)
-        client.start()
+        self.add_on_close(lambda: ctx.close())
 
-    def stop(self):
-        self.logger.info("Terminating stream connected to %s" % self.config.get_server_host())
-        for callback in self.on_close:
-            callback()
+        client = ClientHandler(self.config, listener, ponger)
+        client.start()
 
     def __authenticate(self):
         if not os.path.exists(self.config.get_server_public_key_file()):
@@ -69,4 +62,7 @@ class Client(object):
 
         server_public, _ = zmq.auth.load_certificate(server_public_file)
         stream.curve_serverkey = server_public
+
+        self.add_on_close(lambda: context.zmq_close(stream))
+
         return stream

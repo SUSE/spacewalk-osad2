@@ -16,7 +16,7 @@ from zmq.eventloop import ioloop
 from src.server import smdb
 
 
-class ServerLogic(object):
+class ServerHandler(object):
   """OSAD server class, uses two ZMQ streams to send and receive commands
 
   loop: Tornado IOLoop

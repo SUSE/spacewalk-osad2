@@ -9,18 +9,14 @@
 # along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 #
-import os, sys
-import signal
-import daemon
-import lockfile
 import argparse
 
 from src.server.config import ServerConfig
 from src.server.server import Server
-from src.utils.daemonize import daemonize
+from src.daemonize import daemonize
 
 PROD_CONFIG_PATH = '/etc/rhn/osad/osad_server.cfg'
-TEST_CONFIG_PATH = 'etc/osad_server.test.cfg'
+TEST_CONFIG_PATH = 'etc/osad_server.dev.cfg'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

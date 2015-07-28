@@ -9,18 +9,14 @@
 # along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 #
-import os, sys
-import signal
-import daemon
-import lockfile
 import argparse
 
 from src.client.config import ClientConfig
 from src.client.client import Client
-from src.utils.daemonize import daemonize
+from src.daemonize import daemonize
 
 DEFAULT_CONFIG_FILE = '/etc/sysconfig/rhn/osad.conf'
-TEST_CONFIG_FILE = 'etc/osad_client.test.cfg'
+TEST_CONFIG_FILE = 'etc/osad_client.dev.cfg'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

@@ -14,13 +14,11 @@ import os
 import zmq
 from zmq.auth.ioloop import IOLoopAuthenticator
 from zmq.eventloop import ioloop, zmqstream
-from src.server.logic import ServerLogic
+from src.server.handler import ServerHandler
+from src.service import Service
 
 
-class Server(object):
-    def __init__(self, config):
-        self.config = config
-        self.on_close = []
+class Server(Service):
 
     def start(self):
         loop = ioloop.IOLoop()
@@ -30,18 +28,16 @@ class Server(object):
         router = self.__setup_stream(context, zmq.ROUTER, secret_file)
         router.bind('tcp://%s:%d' % (self.config.get_bind(), self.config.get_listener_port()))
         instream = zmqstream.ZMQStream(router, loop)
+        self.add_on_close(lambda: instream.close())
 
         pub = self.__setup_stream(context, zmq.PUB, secret_file)
         pub.bind('tcp://%s:%d' % (self.config.get_bind(), self.config.get_publisher_port()))
         outstream = zmqstream.ZMQStream(pub, loop)
+        self.add_on_close(lambda: outstream.close())
 
-        ServerLogic(loop, outstream, instream, self.config)
+        ServerHandler(loop, outstream, instream, self.config)
 
         loop.start()
-
-    def stop(self):
-        for callback in self.on_close:
-            callback()
 
     def __authenticate(self):
         public_keys_dir = self.config.get_public_keys_dir()
@@ -66,5 +62,7 @@ class Server(object):
         stream.curve_secretkey = server_secret
         stream.curve_publickey = server_public
         stream.curve_server = True
+
+        self.add_on_close(lambda: context.zmq_close(stream))
 
         return stream
