@@ -17,6 +17,7 @@ import argparse
 
 from src.client.config import ClientConfig
 from src.client.client import Client
+from src.utils.daemonize import daemonize
 
 DEFAULT_CONFIG_FILE = '/etc/sysconfig/rhn/osad.conf'
 TEST_CONFIG_FILE = 'etc/osad_client.test.cfg'
@@ -42,34 +43,12 @@ if __name__ == '__main__':
     config = ClientConfig(args.config_file)
     client = Client(config)
 
-
     if args.daemon:
-        print "terminatin %s " % os.path.isfile(config.get_pid_file())
-        print config.get_pid_file()
-
-        pidfile = lockfile.FileLock(config.get_pid_file())
-
-        if pidfile.is_locked():
-            sys.exit("FATAL: lock file %s already exists" % config.get_pid_file())
-
-        def terminate(signum, frame):
-            client.stop()
-
-        context = daemon.DaemonContext(
-            working_directory='/',
-            umask=0o002,
-            pidfile=pidfile,
-            signal_map = {
-                signal.SIGTERM: terminate,
-                signal.SIGHUP: terminate
-            },
-            stderr = sys.stderr,
-            stdout = sys.stdout
-        )
-
-        with context:
-            client.start()
+        daemonize(client)
     else:
-        client.start()
+        try:
+            client.start()
+        finally:
+            client.stop()
 
 
