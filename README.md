@@ -3,16 +3,12 @@
 
 *EXPERIMENTAL*
 
-This is an experiment to improve Spacewalk component osad.
+This is an experiment to improve osad, a service that simulates instant execution of actions in a [Spacewalk](http://www.spacewalkproject.org/) environment.
 
-It was hacked during an internal SUSE workshop by
+Hacked during an internal SUSE workshop by
 
 * [Ionuț Arțăriși](https://github.com/mapleoin)
 * [Duncan Mac-Vicar P.](https://github.com/dmacvicar)
-
-## About osad
-
-osad is a service to simulate instant execution of actions in a Spacewalk environment.
 
 ## Design
 
