@@ -76,18 +76,20 @@ class ServerHandler(object):
         """
         online = self.hearts.intersection(self.responses)
         just_failed = self.hearts.difference(online)
-        [self.handle_heart_failure(h) for h in just_failed]
+        for h in just_failed:
+            self.handle_heart_failure(h)
 
         just_found = self.responses.difference(online)
-        [self.handle_new_heart(h) for h in just_found]
+        for h in just_found:
+            self.handle_new_heart(h)
 
         self.responses = set()
 
         self.logger.debug("%i beating hearts: %s" % (len(self.hearts), self.hearts))
 
         self.changed_state.extend(
-            [{'id': c, 'state': 'online'} for c in just_found]
-            + [{'id': c, 'state': 'offline'} for c in just_failed])
+            [{'id': c, 'state': 'online'} for c in just_found] +
+            [{'id': c, 'state': 'offline'} for c in just_failed])
 
     def beat(self):
         """This method is run once every PING_INTERVAL"""
@@ -113,9 +115,8 @@ class ServerHandler(object):
         nodes = self.smdb.get_checkin_clients(hearts, self.checkin_count)
         if nodes:
             self.logger.info("Telling nodes to checkin: %s" % nodes)
-
-            [self.pingstream.send("%s checkin" % self._TOPICS['system'] % system)
-             for system in nodes]
+            for system in nodes:
+                self.pingstream.send("%s checkin" % self._TOPICS['system'] % system)
 
     def update_client_states(self):
         """Update the client states in the database
@@ -146,6 +147,6 @@ class ServerHandler(object):
 
     def parse_message(self, msg):
         self.logger.debug("Got: %s" % msg)
-        identity, rest = msg
+        _, rest = msg
         topic, message = rest.split()
         return topic, message

@@ -11,13 +11,16 @@
 #
 
 import os.path
+
 import zmq
 from zmq.auth.ioloop import IOLoopAuthenticator
+
 from src.client.handler import ClientHandler
 from src.service import Service
 
 
 class Client(Service):
+
     def start(self):
         ctx = zmq.Context()
 
@@ -25,13 +28,20 @@ class Client(Service):
 
         self.logger.info("Connecting to %s" % self.config.get_server_host())
 
-        listener = self.__setup_stream(ctx, zmq.SUB, self.config.get_client_secret_key_file(), self.config.get_server_public_key_file())
-        listener.setsockopt(zmq.SUBSCRIBE, self.config.get_system_topic() % self.config.get_system_name())
+        listener = self.__setup_stream(
+            ctx, zmq.SUB, self.config.get_client_secret_key_file(),
+            self.config.get_server_public_key_file())
+        listener.setsockopt(
+            zmq.SUBSCRIBE,
+            self.config.get_system_topic() %
+            self.config.get_system_name())
         listener.setsockopt(zmq.SUBSCRIBE, self.config.get_ping_topic())
         listener.connect(self.config.get_server_producer())
         self.logger.info("Event stream connected to %s" % self.config.get_server_host())
 
-        ponger = self.__setup_stream(ctx, zmq.DEALER, self.config.get_client_secret_key_file(), self.config.get_server_public_key_file())
+        ponger = self.__setup_stream(
+            ctx, zmq.DEALER, self.config.get_client_secret_key_file(),
+            self.config.get_server_public_key_file())
         ponger.setsockopt(zmq.IDENTITY, self.config.get_system_name())
         ponger.connect(self.config.get_server_consumer())
         self.logger.info("Heartbeat stream connected to %s" % self.config.get_server_host())
@@ -41,7 +51,9 @@ class Client(Service):
 
     def __authenticate(self):
         if not os.path.exists(self.config.get_server_public_key_file()):
-            self.logger.fatal('server public key missing: %s' % self.config.get_server_public_key_file())
+            self.logger.fatal(
+                'server public key missing: %s' %
+                self.config.get_server_public_key_file())
             exit(1)
         if not os.path.exists(self.config.get_client_secret_key_file()):
             self.fatal('client secret key missing: %s' % self.config.get_client_secret_key_file())
@@ -60,6 +72,6 @@ class Client(Service):
         server_public, _ = zmq.auth.load_certificate(server_public_file)
         stream.curve_serverkey = server_public
 
-        self.add_on_close(lambda: stream.close())
+        self.add_on_close(stream.close)
 
         return stream

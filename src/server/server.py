@@ -28,12 +28,12 @@ class Server(Service):
         router = self.__setup_stream(context, zmq.ROUTER, secret_file)
         router.bind('tcp://%s:%d' % (self.config.get_bind(), self.config.get_listener_port()))
         instream = zmqstream.ZMQStream(router, loop)
-        self.add_on_close(lambda: instream.close())
+        self.add_on_close(instream.close)
 
         pub = self.__setup_stream(context, zmq.PUB, secret_file)
         pub.bind('tcp://%s:%d' % (self.config.get_bind(), self.config.get_publisher_port()))
         outstream = zmqstream.ZMQStream(pub, loop)
-        self.add_on_close(lambda: outstream.close())
+        self.add_on_close(outstream.close)
 
         ServerHandler(loop, outstream, instream, self.config)
 
@@ -63,6 +63,6 @@ class Server(Service):
         stream.curve_publickey = server_public
         stream.curve_server = True
 
-        self.add_on_close(lambda: stream.close())
+        self.add_on_close(stream.close)
 
         return stream
