@@ -10,10 +10,23 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 #
 import argparse
+import os
+import sys
+
+
+OSAD_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+RHN_ROOT = os.path.join(OSAD_ROOT, os.pardir)
+
+for path in (OSAD_ROOT, RHN_ROOT):
+    if path not in sys.path:
+        sys.path.insert(0, path)
+
+
 
 from src.client.config import ClientConfig
 from src.client.client import Client
 from src.daemonize import daemonize
+
 
 DEFAULT_CONFIG_FILE = '/etc/sysconfig/rhn/osad.conf'
 
