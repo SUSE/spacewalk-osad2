@@ -74,9 +74,11 @@ class ClientConfig(object):
     def get_rhn_check_command(self):
         return self.config.get('osad', 'rhn_check_command')
 
-    @staticmethod
-    def get_osad_registry_interval():
-        return 20
+    def get_osad_registry_interval(self):
+        try:
+            return self.config.getint('osad', 'registry_interval')
+        except (ConfigParser.NoOptionError, ValueError):
+            return 20
 
     def get_default_keys_dir(self):
         return self.config.get('osad', 'certificates')

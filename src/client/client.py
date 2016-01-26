@@ -58,6 +58,7 @@ class Client(Service):
         if not os.path.exists(self.config.get_client_secret_key_file()):
             self.fatal('client secret key missing: %s' % self.config.get_client_secret_key_file())
             exit(1)
+
         auth = IOLoopAuthenticator()
 
         # Tell authenticator to use the certificate in a directory
