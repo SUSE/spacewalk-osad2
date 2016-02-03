@@ -12,7 +12,9 @@ setup(name=PKGNAME,
       version='alpha',
       license='GPLv2',
       description='An alternative OSA dispatcher module for Spacewalk',
-      long_description='This is an experiment to improve osad, a service that simulates instant execution of actions in a Spacewalk environment.',
+      long_description='This is an experiment to improve osad, a service that '
+                       'simulates instant execution of actions in a Spacewalk '
+                       'environment.',
 
       platforms=['All'],
 
@@ -20,5 +22,4 @@ setup(name=PKGNAME,
 
       data_files=[
                   ('/etc/rhn/osad2/', ['etc/osad_client.prod.cfg']),
-                ],
-     )
+                ])

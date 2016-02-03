@@ -4,9 +4,9 @@ from distutils.core import setup, run_setup, Command
 import zmq.auth
 import os
 
-OSAD2_SERVER_CERTS_DIR="/etc/rhn/osad2/certs/"
-OSAD2_CLIENT_SETUP_FILE="setup_client.py"
-PKGNAME_FILE="PKGNAME"
+OSAD2_SERVER_CERTS_DIR = "/etc/rhn/osad2/certs/"
+OSAD2_CLIENT_SETUP_FILE = "setup_client.py"
+PKGNAME_FILE = "PKGNAME"
 
 
 class CreateClientCommand(Command):
@@ -21,9 +21,9 @@ class CreateClientCommand(Command):
     def finalize_options(self):
         assert self.name, 'You must specify a client name'
 
-	keyfile = os.path.join(OSAD2_SERVER_CERTS_DIR, self.name + ".key")
-	assert not os.path.isfile(keyfile), 'Client name already exists'
-             
+        keyfile = os.path.join(OSAD2_SERVER_CERTS_DIR, self.name + ".key")
+        assert not os.path.isfile(keyfile), 'Client name already exists'
+
     def run(self):
         print "Creating CURVE certificates for '%s'..." % self.name
         pk_file, sk_file = zmq.auth.create_certificates(OSAD2_SERVER_CERTS_DIR,
@@ -37,11 +37,10 @@ class CreateClientCommand(Command):
         exit(0)
 
     def __build_client_rpm(self):
-	open(PKGNAME_FILE,"w").write(self.name)
-        _build = run_setup(OSAD2_CLIENT_SETUP_FILE,
-                           script_args=["bdist_rpm", "--quiet"])
-	os.remove(PKGNAME_FILE)
-    
+        open(PKGNAME_FILE, "w").write(self.name)
+        run_setup(OSAD2_CLIENT_SETUP_FILE, script_args=["bdist_rpm", "--quiet"])
+        os.remove(PKGNAME_FILE)
+
 
 setup(name='spacewalk-osad2-server',
       version='alpha',
@@ -60,7 +59,4 @@ setup(name='spacewalk-osad2-server',
                   ('', ['setup.py', 'setup.cfg']),
                 ],
 
-      cmdclass={
-           'createclient': CreateClientCommand,
-      }
-     )
+      cmdclass={'createclient': CreateClientCommand, })
