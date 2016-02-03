@@ -3,3 +3,6 @@
 /.cache
 /.env
 /.ropeproject
+/dist/
+/build/
+/MANIFEST
