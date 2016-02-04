@@ -7,22 +7,18 @@ OSAD2_PATH = os.path.dirname(os.path.realpath(__file__))
 PKGNAME = 'spacewalk-osad2-client'
 PKGNAME_FILE = os.path.join(OSAD2_PATH, "PKGNAME")
 
+CLIENT_SECRET_KEY = 'etc/client.key_secret'
+SERVER_PUB_KEY = 'etc/server.key'
+
 DATA_FILES = [
    ('/etc/rhn/osad2-client/', ['etc/osad_client.prod.cfg']),
+   ('/etc/rhn/osad2-client/certs/', [CLIENT_SECRET_KEY, SERVER_PUB_KEY]),
 ]
 
 
 if os.path.isfile(PKGNAME_FILE):
     client_name = open(PKGNAME_FILE, "r").readline().strip()
     PKGNAME += "-" + client_name
-
-    client_key = 'etc/%s.key_secret' % client_name
-    server_key = 'etc/server.key'
-
-    DATA_FILES.extend([
-        ('/etc/rhn/osad2-client/certs/', [client_key, server_key]),
-    ])
-
 
 setup(name=PKGNAME,
       version='alpha',

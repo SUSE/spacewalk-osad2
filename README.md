@@ -44,7 +44,7 @@ Handshake reuses some pieces from the old osad:
   This connection uses a server public key to authenticate the server. zmq uses
   libsodium for this.
 
-### Instalation on server
+### Install on a Spacewalk server
 
     # python setup.py install
     # python setup.py createserver
