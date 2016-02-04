@@ -3,10 +3,26 @@
 from distutils.core import setup
 import os
 
+OSAD2_PATH = os.path.dirname(os.path.realpath(__file__))
 PKGNAME = 'spacewalk-osad2-client'
+PKGNAME_FILE = os.path.join(OSAD2_PATH, "PKGNAME")
 
-if os.path.isfile("PKGNAME"):
-   PKGNAME += "-" + open("PKGNAME","r").readline()
+DATA_FILES = [
+   ('/etc/rhn/osad2-client/', ['etc/osad_client.prod.cfg']),
+]
+
+
+if os.path.isfile(PKGNAME_FILE):
+    client_name = open(PKGNAME_FILE, "r").readline().strip()
+    PKGNAME += "-" + client_name
+
+    client_key = 'etc/%s.key_secret' % client_name
+    server_key = 'etc/server.key'
+
+    DATA_FILES.extend([
+        ('/etc/rhn/osad2-client/certs/', [client_key, server_key]),
+    ])
+
 
 setup(name=PKGNAME,
       version='alpha',
@@ -18,8 +34,7 @@ setup(name=PKGNAME,
 
       platforms=['All'],
 
-      packages=['src', 'bin'],
+      packages=['osad2', 'osad2.client'],
+      scripts=['bin/osad2_client.py'],
 
-      data_files=[
-                  ('/etc/rhn/osad2/', ['etc/osad_client.prod.cfg']),
-                ])
+      data_files=DATA_FILES)

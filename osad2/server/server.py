@@ -14,8 +14,8 @@ import os
 import zmq
 from zmq.auth.ioloop import IOLoopAuthenticator
 from zmq.eventloop import ioloop, zmqstream
-from src.server.handler import ServerHandler
-from src.service import Service
+from osad2.server.handler import ServerHandler
+from osad2.service import Service
 
 
 class Server(Service):

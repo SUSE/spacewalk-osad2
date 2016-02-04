@@ -14,10 +14,8 @@ import os.path
 
 import zmq
 from zmq.auth.ioloop import IOLoopAuthenticator
-
-from src.client.handler import ClientHandler
-from src.service import Service
-
+from osad2.client.handler import ClientHandler
+from osad2.service import Service
 
 class Client(Service):
 

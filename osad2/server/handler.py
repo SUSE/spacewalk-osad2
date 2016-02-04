@@ -13,7 +13,7 @@ import time
 
 from zmq.eventloop import ioloop
 
-from src.server import smdb
+from osad2.server import smdb
 
 
 class ServerHandler(object):

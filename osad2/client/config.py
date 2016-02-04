@@ -19,9 +19,7 @@ import time
 from rhn import rpclib
 from up2date_client.config import initUp2dateConfig
 
-
 sys.path.append('/usr/share/rhn')
-
 
 class ClientConfig(object):
 

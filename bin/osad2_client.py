@@ -23,10 +23,9 @@ for path in (OSAD_ROOT, RHN_ROOT):
 
 
 
-from src.client.config import ClientConfig
-from src.client.client import Client
-from src.daemonize import daemonize
-
+from osad2.client.config import ClientConfig
+from osad2.client.client import Client
+from osad2.daemonize import daemonize
 
 DEFAULT_CONFIG_FILE = '/etc/sysconfig/rhn/osad.conf'
 

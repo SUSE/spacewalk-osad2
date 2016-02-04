@@ -19,11 +19,11 @@ if OSAD_ROOT not in sys.path:
     sys.path.insert(0, OSAD_ROOT)
 
 
-from src.server.config import ServerConfig
-from src.server.server import Server
-from src.daemonize import daemonize
+from osad2.server.config import ServerConfig
+from osad2.server.server import Server
+from osad2.daemonize import daemonize
 
-DEFAULT_CONFIG_PATH = '/etc/rhn/osad/osad_server.cfg'
+DEFAULT_CONFIG_PATH = '/etc/rhn/osad2-server/osad_server.prod.cfg'
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

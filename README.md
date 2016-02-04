@@ -44,6 +44,19 @@ Handshake reuses some pieces from the old osad:
   This connection uses a server public key to authenticate the server. zmq uses
   libsodium for this.
 
+### Instalation on server
+
+    # python setup.py install
+    # python setup.py createserver
+
+### Deploy a new client
+
+    # python setup.py createclient --name="testclient"
+
+* A new client named RPM will be created in dist/ containing the osad2 module
+  and the key pair needed for server connection.
+* Now install generated RPM in client
+
 ### TODO/issues/ideas
 
 * Think how to test it, may be using Docker
