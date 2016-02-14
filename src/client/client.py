@@ -44,7 +44,7 @@ class Client(Service):
             self.logger.fatal('server public key missing: %s' % self.config.get_server_public_key_file())
             exit(1)
         if not os.path.exists(self.config.get_client_secret_key_file()):
-            self.fatal('client secret key missing: %s' % self.config.get_client_secret_key_file())
+            self.logger.fatal('client secret key missing: %s' % self.config.get_client_secret_key_file())
             exit(1)
         auth = IOLoopAuthenticator()
 
