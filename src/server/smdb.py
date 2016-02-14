@@ -17,15 +17,15 @@ LOG = logging.getLogger(__name__)
 
 
 class SMDB(object):
-    """SUSE Manager Database functions
 
-    """
+    """SUSE Manager Database functions."""
+
     def __init__(self):
         rhnSQL.initDB()
 
-    def update_client_states(self, clients):
-        """Query and update the database for clients to be pinged"""
-
+    @staticmethod
+    def update_client_states(clients):
+        """Query and update the database for clients to be pinged."""
         if not clients:
             return
 
@@ -43,7 +43,8 @@ class SMDB(object):
                       state=[c['state'] for c in clients])
         rhnSQL.commit()
 
-    def get_checkin_clients(self, online_clients, how_many=10):
+    @staticmethod
+    def get_checkin_clients(online_clients, how_many=10):
         """Return a list of client names which are scheduled for a CHECKIN
 
         :online_clients - a list of client names which are known to be
@@ -99,7 +100,6 @@ class SMDB(object):
             if row['status'] == 0:  # 'queued'
                 nodes_to_checkin.append(row['client_name'])
             else:
-                LOG.debug("Skipped %s. Already in progress."
-                          % row['client_name'])
+                LOG.debug("Skipped %s. Already in progress.", row['client_name'])
 
         return nodes_to_checkin

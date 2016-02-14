@@ -14,6 +14,9 @@ import abc
 
 
 class Service(object):
+
+    """Base interface for services."""
+
     def __init__(self, config):
         self.config = config
         self.logger = config.get_logger(self.__class__.__name__)

@@ -1,10 +1,12 @@
-import lockfile
-import daemon
-import sys
 import signal
+import sys
+
+import daemon
+import lockfile
 
 
 def daemonize(service):
+    """Daemonize the given service."""
     pidfile = lockfile.FileLock(service.config.get_pid_file())
 
     if pidfile.is_locked():

@@ -10,6 +10,14 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 #
 import argparse
+import os
+import sys
+
+
+OSAD_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+if OSAD_ROOT not in sys.path:
+    sys.path.insert(0, OSAD_ROOT)
+
 
 from src.server.config import ServerConfig
 from src.server.server import Server

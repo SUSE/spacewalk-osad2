@@ -1,0 +1,4 @@
+argparse
+lockfile
+python-daemon  == 1.5.5
+zmq

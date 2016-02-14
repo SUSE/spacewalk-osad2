@@ -10,21 +10,21 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 #
 
-import sys
-
-sys.path.append('/usr/share/rhn')
-
 import ConfigParser
 import logging
-import time
 import os
+import sys
+import time
 
 from rhn import rpclib
 from up2date_client.config import initUp2dateConfig
-from up2date_client import config
+
+
+sys.path.append('/usr/share/rhn')
 
 
 class ClientConfig(object):
+
     def __init__(self, config_path):
         self.config = ConfigParser.ConfigParser()
         self.config.readfp(open(config_path))
@@ -35,12 +35,14 @@ class ClientConfig(object):
         serverrpc = rpclib.Server(uri=self.get_server_url())
         ret = None
         while ret is None:
-            self.logger.info("registering as push client with %s..." % self.get_server_url())
+            self.logger.info("registering as push client with %s...", self.get_server_url())
             try:
-                ret = serverrpc.registration.register_osad(self.get_systemid(), {'client-timestamp': int(time.time())})
-            except Exception as e:
-                self.ogger.error(e)
-                self.logger.info("waiting %d seconds..." % self.get_osad_registry_interval())
+                ret = serverrpc.registration.register_osad(
+                    self.get_systemid(),
+                    {'client-timestamp': int(time.time())})
+            except Exception as e: # noqa
+                self.logger.error(e)
+                self.logger.info("waiting %d seconds...", self.get_osad_registry_interval())
                 time.sleep(self.get_osad_registry_interval())
         return ret
 
@@ -64,7 +66,8 @@ class ClientConfig(object):
     def is_debug(self):
         return self.config.getint('osad', 'debug_level') > 0
 
-    def get_server_url(self):
+    @staticmethod
+    def get_server_url():
         cfg = initUp2dateConfig()
         return cfg['serverURL']
 
@@ -72,16 +75,27 @@ class ClientConfig(object):
         return self.config.get('osad', 'rhn_check_command')
 
     def get_osad_registry_interval(self):
-        return 20
+        try:
+            return self.config.getint('osad', 'registry_interval')
+        except (ConfigParser.NoOptionError, ValueError):
+            return 20
 
     def get_default_keys_dir(self):
         return self.config.get('osad', 'certificates')
 
     def get_server_public_key_file(self):
-        return os.path.join(self.get_default_keys_dir(), self.config.get('osad', 'server_public_key'))
+        return os.path.join(
+            self.get_default_keys_dir(),
+            self.config.get(
+                'osad',
+                'server_public_key'))
 
     def get_client_secret_key_file(self):
-        return os.path.join(self.get_default_keys_dir(), self.config.get('osad', 'client_secret_key'))
+        return os.path.join(
+            self.get_default_keys_dir(),
+            self.config.get(
+                'osad',
+                'client_secret_key'))
 
     def get_pid_file(self):
         return self.config.get('osad', 'pidfile')
@@ -91,8 +105,10 @@ class ClientConfig(object):
         with open(systemid_path) as f:
             return f.read()
 
-    def get_ping_topic(self):
+    @staticmethod
+    def get_ping_topic():
         return 'ping'
 
-    def get_system_topic(self):
+    @staticmethod
+    def get_system_topic():
         return "system:%s"

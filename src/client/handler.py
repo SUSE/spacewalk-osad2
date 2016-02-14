@@ -15,11 +15,13 @@ import subprocess
 
 
 class ClientHandler(object):
+
     def __init__(self, config, listener, ponger):
         self.config = config
+        self.do_checkin_process = None
         self.listener = listener
-        self.ponger = ponger
         self.logger = config.get_logger(__name__)
+        self.ponger = ponger
 
     def start(self):
         self.do_checkin_process = None
@@ -45,7 +47,8 @@ class ClientHandler(object):
             try:
                 available_cmds[cmd]()
             except KeyError:
-                self.logger.error("Unknown command '%s' from %s" % (cmd, self.config.get_server_host()))
+                self.logger.error(
+                    "Unknown command '%s' from %s", cmd, self.config.get_server_host())
 
     def do_ping(self, reply):
         self.ponger.send(reply)
@@ -63,7 +66,9 @@ class ClientHandler(object):
                 cmd.append('-vvv')
             # do not wait
             self.do_checkin_process = subprocess.Popen(cmd)
+
         except OSError as e:
-            self.logger.error("Can't execute rhn_check: %s" % e.strerror)
-        except Exception as e:
-            self.logger.error("Can't execute rhn_check: %s" % e.message)
+            self.logger.error("Can't execute rhn_check: %s", e.strerror)
+
+        except Exception as e: # noqa
+            self.logger.error("Can't execute rhn_check: %s", e.message)
