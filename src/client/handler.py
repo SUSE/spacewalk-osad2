@@ -43,7 +43,7 @@ class ClientHandler(object):
             self.do_ping(msg)
         elif topic == (self.config.get_system_topic() % self.config.get_system_name()):
             try:
-                available_cmds[cmd](self)
+                available_cmds[cmd]()
             except KeyError:
                 self.logger.error("Unknown command '%s' from %s" % (cmd, self.config.get_server_host()))
 
